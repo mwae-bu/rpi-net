@@ -4,23 +4,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Raspberry Pi Wireless Server</title>
+  <title>SCRAP TEST</title>
   <!-- Include CanvasJS for plotting -->
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  
 </head>
 
 <body style="background-color:#bbbddd"> 
   <!-- <div id="temperature_chart" style="height: 300px; width: 100%;"></div> -->
 
-    <!-- SIMPLE SLIDER -->
-    <div style="width:612px; height:612px" data-simple-slider>
-      <img src="https://picsum.photos/612/612?random=1"/>
-      <img src="https://picsum.photos/612/612?random=2"/>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-slider/1.0.0/simpleslider.min.js"></script>
-    <script>
-      simpleslider.getSlider();
-    </script> 
 
     <!-- TITLE CODE & SET UP -->
     <h1>EC444: Group 7</h1>
@@ -29,8 +21,12 @@
 
     <hr>
 
-    <!-- SENSOR READINGS -->
+    <strong>Slider Value: </strong><span id="outputText">50</span>
+    <input type="range" id="inputSlider" min="0" max="1023" value="0" step="1" oninput="showValue(this.value)" />
 
+    <!-- SENSOR READINGS -->
+    <strong>Slider Value: </strong><span id="outputText">50</span>
+    <input type="range" id="inputSlider" min="0" max="1023" value="0" step="1" oninput="showValue(this.value)" />
  
     <!-- CONTROL CODE -->
 
