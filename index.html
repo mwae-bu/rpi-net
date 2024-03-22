@@ -23,21 +23,20 @@
 
     <!-- Slider??? -->
     <div>
-      <input type="range" id="volume" name="volume" min="0" max="11" />
-      <label for="volume">Volume</label>
+      <input type="range" id="brightness" name="brightness" min="0" max="10" />
+      <label for="brightness">LED Brightness</label>
     </div>
 
     <script>
-      document.getElementById('volume').addEventListener('input', function() {
-        var volume = this.value;
-        console.log('Volume:', volume);
+      document.getElementById('brightness').addEventListener('input', function() {
+        var brightness = this.value;
+        console.log('LED Brightness:', brightness);
       });
     </script>
 
     <!-- SENSOR READINGS -->
-    <!-- <strong>Slider Value: </strong><span id="outputText">50</span>
-    <input type="range" id="inputSlider" min="0" max="1023" value="0" step="1" oninput="showValue(this.value)" /> -->
- 
+
+    
     <!-- CONTROL CODE -->
 
 </body>
