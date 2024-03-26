@@ -12,20 +12,27 @@ fs.readFile('./index.html', function (err, html) {
     http.createServer(function(request, response) {
         if (request.url === '/hls/stream') {
             // Serve the HLS stream
-            const streamFile = 'http://192.168.1.101:3333';
-            fs.readFile(streamFile, (err, data) => {
-                if (err) {
-                    response.writeHead(500);
-                    response.end('Error loading HLS stream');
-                    return;
-                }
+            const streamFile = 'http://192.168.1.101:3333';    // Video IP
+            http.get(streamFile, function(res) {
+                var data = '';
 
-                response.writeHead(200, {'Content-Type': 'application/vnd.apple.mpegurl'});
-                response.end(data);
+                // A chunk of data has been received.
+                res.on('data', function(chunk) {
+                    data += chunk;
+                });
+
+                res.on('end', function() {
+                    response.writeHead(200, {'Content-Type': 'application/vnd.apple.mpegurl'});
+                    response.end(data);
+                });
+            }).on('error', function(err) {
+                console.log('Error loading HLS stream:', err);
+                response.writeHead(500);
+                response.end('Error loading HLS stream');
             });
         } else {
             // Serve the HTML page
-            response.writeHeader(200, {"Content-Type": "text/html"});
+            response.writeHead(200, {"Content-Type": "text/html"});
             response.write(html);
             response.end();
         }
