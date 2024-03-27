@@ -12,7 +12,7 @@ fs.readFile('./index.html', function (err, html) {
     http.createServer(function(request, response) {
         if (request.url === '/hls/stream') {
             // Serve the HLS stream
-            const streamFile = 'http://192.168.1.101:3333';    // Video IP
+            const streamFile = 'http://192.168.1.101:5001';    // Video IP
             http.get(streamFile, function(res) {
                 var data = '';
 
