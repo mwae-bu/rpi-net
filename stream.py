@@ -2,6 +2,7 @@
 
 # References
     # Flask Tutorial: https://www.youtube.com/watch?v=qs3KhLDUBmk
+    # Picamera2: https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf
 
 import io
 from picamera2 import Picamera2, Preview, JpegEncoder
@@ -20,7 +21,7 @@ picam2.start()
 
 def generate_frames():
     encoder = JpegEncoder(picam2.video_configuration)
-    picam2.start_recording(encoder, 'mjpeg')    # record using mjpeg rather than raw
+    picam2.start_recording(encoder, 'jpeg')    # record using mjpeg rather than raw
 
     while True:
         # Get one image => JPEG
