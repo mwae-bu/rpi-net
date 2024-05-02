@@ -10,7 +10,7 @@ from flask import Flask, Response
 port = 5000
 
 # Make the flask app
-app = flask(__name__)
+app = Flask(__name__)
 
 def generate_frames():
     with picamera.PiCamera as camera:
