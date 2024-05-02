@@ -4,7 +4,7 @@
     # Flask Tutorial: https://www.youtube.com/watch?v=qs3KhLDUBmk
 
 import io
-from picamera2 import Picamera2, Preview
+from picamera2 import Picamera2, Preview, JpegEncoder
 from flask import Flask, Response
 
 port = 5000
@@ -19,14 +19,14 @@ picam2.configure(preview_config)
 picam2.start()
 
 def generate_frames():
+    encoder = JpegEncoder(picam2.video_configuration)
+    picam2.start_recording(encoder, 'mjpeg')    # record using mjpeg rather than raw
+
     while True:
-        # Capture the frame
-        frame = picam2.capture_array()
-        stream = io.BytesIO()
-        stream.write(frame)
-        stream.seek(0)
+        # Get one image => JPEG
+        frame = encoder.get_frame()
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + stream.read() + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/video_feed')
 def video_feed():
