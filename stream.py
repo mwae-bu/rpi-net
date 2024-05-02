@@ -4,7 +4,7 @@
     # Flask Tutorial: https://www.youtube.com/watch?v=qs3KhLDUBmk
 
 import io
-import picamera
+from picamera2, Picamera2, Preview
 from flask import Flask, Response
 
 port = 5000
@@ -12,22 +12,26 @@ port = 5000
 # Make the flask app
 app = Flask(__name__)
 
-def generate_frames():
-    with picamera.PiCamera() as camera:
-        camera.resolution = (640, 480)  #! Pi Cam v2.1 supports 720p60 and 640x480p90
-        camera.framerate = 24
-        stream = io.BytesIO()
+# Initialize Picamera2
+picam2 = Picamera2()
+preview_config = picam2.create_preview_configuration(main={"size": (640, 480)})
+picam2.configure(preview_config)
+picam2.start()
 
-        # Process frames and stream to app via JPEG stream
-        for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
-            stream.seek(0)  # wait to process
-            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + stream.read() + b'\r\n')
-            stream.seek(0)
-            stream.truncate()
+def generate_frames():
+    while True:
+        # Capture the frame
+        frame = picam2.capture_array()
+        stream = io.BytesIO()
+        stream.write(frame)
+        stream.seek(0)
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + stream.read() + b'\r\n')
 
 @app.route('/video_feed')
 def video_feed():
-     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port, threaded=True)
+    app.run(host='0.0.0.0', port=5000, threaded=True)
+
