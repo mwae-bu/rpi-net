@@ -1,6 +1,9 @@
 var http = require('http');
 var fs = require('fs');
 
+const livestream = require('rpi_camera_livestream');
+livestream.start();
+
 const PORT=8080; 
 
 fs.readFile('./bonk.html', function (err, html) {
