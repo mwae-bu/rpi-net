@@ -1,34 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>WebSocket Video Stream</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Stream</title>
 </head>
 <body>
-
-<video id="video" width="640" height="480" controls autoplay></video>
-
-<script>
-  var video = document.getElementById('video');
-  var mediaSource = new MediaSource();
-  video.src = URL.createObjectURL(mediaSource);
-
-  mediaSource.addEventListener('sourceopen', function() {
-    var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-    var socket = new WebSocket('ws://192.168.1.102:8080');
-
-    socket.onmessage = function(event) {
-      sourceBuffer.appendBuffer(new Uint8Array(event.data));
-    };
-
-    socket.onopen = function(event) {
-      console.log('WebSocket is open now.');
-    };
-
-    socket.onclose = function(event) {
-      console.log('WebSocket is closed now.');
-    };
-  });
-</script>
-
+    <video id="live-video" controls autoplay>
+        <source src="/live/stream.m3u8" type="application/x-mpegURL">
+        Your browser does not support the video tag.
+    </video>
 </body>
 </html>
