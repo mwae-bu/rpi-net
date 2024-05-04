@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 
 const server = http.createServer((req, res) => {
   if (req.url === '/') {
@@ -12,9 +13,12 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(data);
     });
-  }
+  } else if (req.url === '/video') {
+    // Spawn a child process to run libcamera-vid
+    const libcamera = spawn('libcamera-vid', [
+      '-t', '0', '--inline', '--listen', '-o', '-'
+    ]);
 
-  if (req.url === '/video') {
     // Set the headers for an MJPEG stream
     res.writeHead(200, {
       'Content-Type': 'multipart/x-mixed-replace; boundary=--myboundary',
@@ -24,19 +28,17 @@ const server = http.createServer((req, res) => {
       'Pragma': 'no-cache'
     });
 
-    const { spawn } = require('child_process');
-    const libcamera = spawn('libcamera-vid', [
-      '-t', '0', '--inline', '--listen', '-o', 'tcp://0.0.0.0:8888'
-    ]);
-
+    // When data is received from the libcamera process, write it to the response
     libcamera.stdout.on('data', (data) => {
-      res.write(data);
+      res.write("--myboundary\nContent-Type: image/jpeg\n\n" + data.toString('binary') + "\n");
     });
 
+    // If the libcamera process closes, end the HTTP response
     libcamera.on('close', (code) => {
       res.end();
     });
 
+    // If there's an error with the libcamera process, log it
     libcamera.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);
     });

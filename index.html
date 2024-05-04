@@ -5,7 +5,9 @@
   <title>RPi Livestream</title>
 </head>
 <body>
-  <video id="videoStream" controls autoplay></video>
-  <script src="http://192.168.1.101:8888"></script>
+  <video id="videoStream" controls autoplay>
+    <source src="http://192.168.1.101:3000/video" type="video/mp4">
+  </video>
+  <script src="client.js"></script>
 </body>
 </html>
