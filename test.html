@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WebSocket Video Stream</title>
+</head>
+<body>
+
+<video id="video" width="640" height="480" controls autoplay></video>
+
+<script>
+  var video = document.getElementById('video');
+  var mediaSource = new MediaSource();
+  video.src = URL.createObjectURL(mediaSource);
+
+  mediaSource.addEventListener('sourceopen', function() {
+    var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+    var socket = new WebSocket('ws://192.168.1.102:8080');
+
+    socket.onmessage = function(event) {
+      sourceBuffer.appendBuffer(new Uint8Array(event.data));
+    };
+
+    socket.onopen = function(event) {
+      console.log('WebSocket is open now.');
+    };
+
+    socket.onclose = function(event) {
+      console.log('WebSocket is closed now.');
+    };
+  });
+</script>
+
+</body>
+</html>
